@@ -1073,12 +1073,18 @@
               Happy Birthday once again, meri Sona! Aaj bhi, kal bhi, aur hamesha—main sirf tumhari side hu. 🌙❤️
             </p>
 
-            <!-- Keepsake Download Pill Button -->
+            <!-- Keepsake Download Pill Buttons -->
             <div id="keepsake-action-wrap" class="keepsake-action-wrap hidden">
-              <button id="download-keepsake-btn" class="keepsake-btn" onclick="downloadLetterKeepsake(event)" title="Save high-res keepsake picture to gallery">
-                <span class="keepsake-camera-icon">📸</span>
-                <span class="keepsake-btn-text">Save Keepsake to Gallery ✨</span>
-              </button>
+              <div class="keepsake-buttons-group">
+                <button id="download-keepsake-btn" class="keepsake-btn keepsake-btn-letter" onclick="downloadLetterKeepsake(event)" title="Save high-res keepsake letter to gallery">
+                  <span class="keepsake-camera-icon">💌</span>
+                  <span class="keepsake-btn-text">Save Letter Card ✨</span>
+                </button>
+                <button id="download-journey-btn" class="keepsake-btn keepsake-btn-journey" onclick="downloadJourneyCollage(event)" title="Download full memory journey poster (Dark Fantasy Romance)">
+                  <span class="keepsake-camera-icon">🎞️</span>
+                  <span class="keepsake-btn-text">Full Journey Collage (Dark Romance) 💜✨</span>
+                </button>
+              </div>
               <div id="keepsake-toast" class="keepsake-toast hidden">Card saved to your downloads! 💌✨</div>
             </div>
           </div>

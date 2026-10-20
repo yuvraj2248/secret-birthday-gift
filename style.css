@@ -2237,6 +2237,62 @@ html, body {
   animation: fadeInKeepsake 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
 }
 
+.keepsake-buttons-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.keepsake-btn-letter {
+  background: linear-gradient(135deg, #f43f5e 0%, #a855f7 50%, #ec4899 100%);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 24px rgba(244, 63, 94, 0.45), 0 0 18px rgba(236, 72, 153, 0.4);
+}
+
+.keepsake-btn-journey {
+  background: linear-gradient(135deg, #4a044e 0%, #701a75 35%, #831843 70%, #9d174d 100%) !important;
+  border: 2px solid rgba(251, 191, 36, 0.85) !important;
+  box-shadow: 0 8px 24px rgba(112, 26, 117, 0.55), 0 0 20px rgba(251, 191, 36, 0.35) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.keepsake-btn-journey::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(60deg, transparent 40%, rgba(255, 255, 255, 0.25) 50%, transparent 60%);
+  transform: rotate(25deg);
+  animation: journeyShimmer 3.2s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes journeyShimmer {
+  0% { transform: translateX(-100%) rotate(25deg); }
+  50%, 100% { transform: translateX(100%) rotate(25deg); }
+}
+
+@media (max-width: 768px) {
+  .keepsake-buttons-group {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  .keepsake-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 11px 20px;
+    font-size: 0.92rem;
+  }
+}
+
 @keyframes fadeInKeepsake {
   0% { opacity: 0; transform: translateY(14px) scale(0.95); }
   100% { opacity: 1; transform: translateY(0) scale(1); }

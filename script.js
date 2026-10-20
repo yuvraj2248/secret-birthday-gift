@@ -2308,13 +2308,383 @@ function drawKeepsakeContent(ctx, canvas, photoImg, btn, toast) {
 
     if (btn) btn.innerHTML = '✅ Saved! 📸';
     if (toast) {
+      toast.textContent = 'Card saved to your downloads! 💌✨';
       toast.classList.remove('hidden');
       setTimeout(() => toast.classList.add('hidden'), 4000);
     }
     launchConfetti();
   } catch (err) {
     console.warn('Keepsake download notice:', err);
-    if (btn) btn.innerHTML = '📸 Save Keepsake to Gallery ✨';
+    if (btn) btn.innerHTML = '💌 Save Letter Card ✨';
+  }
+}
+
+/* ─── FULL JOURNEY MEMORY COLLAGE GENERATOR (DARK ROMANCE EDITION) ─── */
+function downloadJourneyCollage(event) {
+  if (event) event.stopPropagation();
+  const btn = document.getElementById('download-journey-btn');
+  const toast = document.getElementById('keepsake-toast');
+  if (btn) btn.innerHTML = '⏳ Crafting Journey Collage...';
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 1200;
+  canvas.height = 2200;
+  const ctx = canvas.getContext('2d');
+
+  const loadImage = (src) => new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+
+  Promise.all([
+    loadImage('assets/shinchan-birthday.png'),
+    loadImage('assets/bts-photocard.jpg'),
+    loadImage('assets/birthday-anime-character.jpg'),
+    loadImage('assets/birthday-anime-character-male.png')
+  ]).then(([shinchanImg, btsImg, anyaImg, animeBoyImg]) => {
+    renderJourneyCollage(ctx, canvas, { shinchanImg, btsImg, anyaImg, animeBoyImg }, btn, toast);
+  }).catch(() => {
+    renderJourneyCollage(ctx, canvas, {}, btn, toast);
+  });
+}
+
+function renderJourneyCollage(ctx, canvas, imgs, btn, toast) {
+  const { shinchanImg, btsImg, anyaImg, animeBoyImg } = imgs;
+
+  // 1. Deep Midnight & Royal Plum Dark Romance Gradient
+  const bgGrad = ctx.createLinearGradient(0, 0, 1200, 2200);
+  bgGrad.addColorStop(0, '#090110');
+  bgGrad.addColorStop(0.18, '#1b0329');
+  bgGrad.addColorStop(0.45, '#2e0842');
+  bgGrad.addColorStop(0.72, '#1e042d');
+  bgGrad.addColorStop(1, '#08010d');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, 1200, 2200);
+
+  // 2. Ambient Stardust Nebula Glow
+  const drawGlow = (x, y, r, color) => {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, color);
+    g.addColorStop(1, 'transparent');
+    ctx.fillStyle = g;
+    ctx.fillRect(x - r, y - r, r * 2, r * 2);
+  };
+  drawGlow(200, 300, 260, 'rgba(168, 85, 247, 0.22)');
+  drawGlow(1000, 750, 320, 'rgba(236, 72, 153, 0.20)');
+  drawGlow(350, 1300, 280, 'rgba(147, 51, 234, 0.18)');
+  drawGlow(850, 1750, 300, 'rgba(244, 63, 94, 0.18)');
+
+  // 3. Ornate Double Gold & Rose Filigree Border
+  ctx.strokeStyle = 'rgba(251, 191, 36, 0.75)'; // Gold
+  ctx.lineWidth = 10;
+  ctx.strokeRect(32, 32, 1200 - 64, 2200 - 64);
+
+  ctx.strokeStyle = 'rgba(244, 114, 182, 0.45)'; // Rose Gold
+  ctx.lineWidth = 2.5;
+  ctx.strokeRect(44, 44, 1200 - 88, 2200 - 88);
+
+  // Decorative Corner Rosettes
+  const drawCornerDeco = (x, y) => {
+    ctx.font = '24px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillText('✨', x, y);
+  };
+  drawCornerDeco(68, 72);
+  drawCornerDeco(1132, 72);
+  drawCornerDeco(68, 2148);
+  drawCornerDeco(1132, 2148);
+
+  // 4. Regal Header
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#fef08a';
+  ctx.font = 'bold 20px "Courier Prime", monospace';
+  ctx.letterSpacing = '4px';
+  ctx.fillText('✨ A LIFETIME BIRTHDAY CHRONICLE • OCTOBER 2026 ✨', 600, 95);
+
+  ctx.fillStyle = '#fce7f3';
+  ctx.font = 'bold 44px "Playfair Display", serif';
+  ctx.shadowColor = 'rgba(236, 72, 153, 0.65)';
+  ctx.shadowBlur = 18;
+  ctx.fillText('VAISHU’S MIDNIGHT SURPRISE', 600, 148);
+  ctx.shadowColor = 'transparent';
+
+  ctx.fillStyle = '#e9d5ff';
+  ctx.font = 'italic 22px "Courier Prime", monospace';
+  ctx.fillText('Every memory, every chapter, crafted with love for Sona by Yuvraj 🌙💜', 600, 188);
+
+  // Header Divider
+  ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(180, 215);
+  ctx.lineTo(1020, 215);
+  ctx.stroke();
+
+  // Helper for Vignette Cards
+  const drawCard = (x, y, w, h, title, subtitle, bgGradStops) => {
+    ctx.save();
+    const cGrad = ctx.createLinearGradient(x, y, x + w, y + h);
+    cGrad.addColorStop(0, bgGradStops[0]);
+    cGrad.addColorStop(1, bgGradStops[1]);
+    ctx.fillStyle = cGrad;
+    ctx.strokeStyle = 'rgba(216, 180, 254, 0.55)';
+    ctx.lineWidth = 2;
+
+    const r = 16;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+    ctx.shadowBlur = 14;
+    ctx.shadowOffsetY = 6;
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.fillStyle = '#fce7f3';
+    ctx.font = 'bold 18px "Courier Prime", monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(title, x + 20, y + 34);
+
+    if (subtitle) {
+      ctx.fillStyle = '#d8b4fe';
+      ctx.font = 'italic 15px "Courier Prime", monospace';
+      ctx.fillText(subtitle, x + 20, y + 58);
+    }
+  };
+
+  // ── ROW 1: CHAPTER I & CHAPTER II (Y: 240, H: 260) ──
+  drawCard(70, 240, 510, 260, '🎬 CH. I: THE MIDNIGHT STRIKE', '11:59:56 ➔ 12:00:00 AM', ['#260410', '#170208']);
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = '48px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('⏰', 160, 370);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 20px "Courier Prime", monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('Double-Ring Roman Clock', 230, 335);
+  ctx.fillStyle = '#fbcfe8';
+  ctx.font = '16px "Courier Prime", monospace';
+  ctx.fillText('Crimson velvet curtains parted', 230, 365);
+  ctx.fillText('to begin your birthday stage ✨', 230, 390);
+
+  drawCard(620, 240, 510, 260, '🔐 CH. II: SHINCHAN VAULT', 'Secret Passcode: 2010 💖', ['#1e052c', '#13021f']);
+  if (shinchanImg) {
+    ctx.drawImage(shinchanImg, 645, 305, 110, 110);
+  }
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 20px "Courier Prime", monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('Cameo Rosette Vault', 775, 335);
+  ctx.fillStyle = '#d8b4fe';
+  ctx.font = '16px "Courier Prime", monospace';
+  ctx.fillText('PIN: [ 2 ][ 0 ][ 1 ][ 0 ] 💖', 775, 365);
+  ctx.fillText('Playful NO: "Chup-chaap YES"', 775, 390);
+
+  // ── ROW 2: CHAPTER III & CHAPTER IV (Y: 530, H: 260) ──
+  drawCard(70, 530, 510, 260, '🎁 CH. III: 3 MYSTERY BOXES', 'Inverted Triangle Gateway 💖', ['#1b0528', '#10021b']);
+  ctx.font = '36px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('💖  💖', 160, 625);
+  ctx.fillText('💖', 160, 665);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 19px "Courier Prime", monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('The 3 Floating Hearts', 230, 615);
+  ctx.fillStyle = '#fbcfe8';
+  ctx.font = '15px "Courier Prime", monospace';
+  ctx.fillText('Box 1: Memories & BTS', 230, 645);
+  ctx.fillText('Box 2: 3D Cake & Cat Video', 230, 670);
+  ctx.fillText('Box 3: The Vintage Letter', 230, 695);
+
+  drawCard(620, 530, 510, 260, '💜 CH. IV: BORAHAE SPECIAL', 'BTS ARMY Special Photocard 🫰', ['#230635', '#160322']);
+  if (btsImg) {
+    ctx.drawImage(btsImg, 645, 595, 110, 110);
+  }
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 19px "Courier Prime", monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('3D Flip Card & Bow 🎀', 775, 615);
+  ctx.fillStyle = '#d8b4fe';
+  ctx.font = '15px "Courier Prime", monospace';
+  ctx.fillText('Caption: "Borahae Sona! 💜✨"', 775, 645);
+  ctx.fillText('Secret Voice Note from Yuvraj 🎙️', 775, 670);
+  ctx.fillText('"Haq toh mera hi rahega..."', 775, 695);
+
+  // ── ROW 3: CHAPTER V & CHAPTER VI (Y: 820, H: 260) ──
+  drawCard(70, 820, 510, 260, '🎂 CH. V: 3D WEBGL CAKE', 'Drag to Orbit • Tap to Blow 🕯️', ['#28082f', '#190320']);
+  if (animeBoyImg) {
+    ctx.drawImage(animeBoyImg, 70, 885, 110, 110);
+  }
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 19px "Courier Prime", monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('Real-Time WebGL Cake 🎂', 200, 905);
+  ctx.fillStyle = '#fbcfe8';
+  ctx.font = '15px "Courier Prime", monospace';
+  ctx.fillText('Interactive 3D Candle Flames', 200, 935);
+  ctx.fillText('Confetti Blast & Celebration', 200, 960);
+  ctx.fillText('Dedicated: "HAPPY BIRTHDAY VAISHU"', 200, 985);
+
+  drawCard(620, 820, 510, 260, '🐱 CH. VI: CAT SQUAD REEL', '9:16 Vertical Video Surprise 🐾', ['#22062b', '#13021c']);
+  ctx.font = '46px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('🐱🎂', 710, 950);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 19px "Courier Prime", monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('Special Cat Delivery ✨', 775, 905);
+  ctx.fillStyle = '#d8b4fe';
+  ctx.font = 'italic 14.5px "Courier Prime", monospace';
+  ctx.fillText('"har saal raat ko 12 baje sabse', 775, 935);
+  ctx.fillText('pehle tumhara chehra chamkane', 775, 960);
+  ctx.fillText('ki wajah main hi banu... 🌙"', 775, 985);
+
+  // ── CENTERPIECE: THE SOUL LETTER (Y: 1110, H: 750) ──
+  ctx.save();
+  const letterGrad = ctx.createLinearGradient(70, 1110, 1130, 1860);
+  letterGrad.addColorStop(0, '#1c0529');
+  letterGrad.addColorStop(0.5, '#2f0b40');
+  letterGrad.addColorStop(1, '#180424');
+  ctx.fillStyle = letterGrad;
+  ctx.strokeStyle = 'rgba(255, 192, 218, 0.75)';
+  ctx.lineWidth = 2.5;
+
+  const lx = 70, ly = 1110, lw = 1060, lh = 750, lr = 22;
+  ctx.beginPath();
+  ctx.moveTo(lx + lr, ly);
+  ctx.lineTo(lx + lw - lr, ly);
+  ctx.quadraticCurveTo(lx + lw, ly, lx + lw, ly + lr);
+  ctx.lineTo(lx + lw, ly + lh - lr);
+  ctx.quadraticCurveTo(lx + lw, ly + lh, lx + lw - lr, ly + lh);
+  ctx.lineTo(lx + lr, ly + lh);
+  ctx.quadraticCurveTo(lx, ly + lh, lx, ly + lh - lr);
+  ctx.lineTo(lx, ly + lr);
+  ctx.quadraticCurveTo(lx, ly, lx + lr, ly);
+  ctx.closePath();
+  ctx.shadowColor = 'rgba(0,0,0,0.6)';
+  ctx.shadowBlur = 24;
+  ctx.shadowOffsetY = 10;
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+
+  if (anyaImg) {
+    ctx.save();
+    ctx.translate(195, 1260);
+    ctx.rotate(-0.03);
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = 18;
+    ctx.shadowOffsetY = 8;
+    ctx.fillRect(-95, -90, 190, 200);
+    ctx.drawImage(anyaImg, -80, -75, 160, 135);
+    ctx.font = '28px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🎀', 0, 90);
+    ctx.restore();
+  }
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#ffe4e6';
+  ctx.font = 'bold 26px "Playfair Display", serif';
+  ctx.fillText('Happy Birthday to the girl who owns my favourite smiles, Vaishu! ✨💖', 320, 1205);
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 19.5px "Courier Prime", monospace';
+  ctx.shadowColor = 'rgba(0,0,0,0.7)';
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetY = 2;
+
+  const letterLines = [
+    'Sach kahu Sona, tumhari aadat si ho gayi hai. Mere sabse kharab din ko',
+    'bhi sirf tumhari ek hasi ya ek aawaz pal bhar me theek kar deti hai.',
+    'You make ordinary moments feel a little magical just by being in them.',
+    '',
+    'Log kehte hain hum besties hain, par sach toh yeh hai ki tum mere liye usse',
+    'kahin zyada khaas ho. Tumhare saare nakhre, tumhari har choti-badi khushi,',
+    'aur tumhari har pagalpan wali baat meri favourite hai.',
+    '',
+    'Happy Birthday once again, meri Sona! Aaj bhi, kal bhi, aur hamesha—',
+    'main sirf tumhari side hu. 🌙❤️'
+  ];
+
+  let lTextY = 1270;
+  letterLines.forEach((line) => {
+    if (line.includes('Happy Birthday once again')) {
+      ctx.fillStyle = '#ffd1dc';
+      ctx.font = 'bold 22px "Courier Prime", monospace';
+    } else {
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 19.5px "Courier Prime", monospace';
+    }
+    ctx.fillText(line, 115, lTextY);
+    lTextY += 38;
+  });
+
+  ctx.shadowColor = 'transparent';
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#fbcfe8';
+  ctx.font = 'italic bold 24px "Courier Prime", monospace';
+  ctx.fillText('— With all my heart, Yuvraj 💖', 1080, 1795);
+
+  // ── BOTTOM DEDICATION & SOUNDTRACK BAR (Y: 1890 to 2140) ──
+  ctx.strokeStyle = 'rgba(251, 191, 36, 0.4)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(100, 1890);
+  ctx.lineTo(1100, 1890);
+  ctx.stroke();
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = 'bold 22px "Courier Prime", monospace';
+  ctx.fillText('🎵 OFFICIAL SOUNDTRACK: "VAAROON FOREVER" — ANAND BHASKAR', 600, 1940);
+
+  ctx.fillStyle = '#e9d5ff';
+  ctx.font = 'italic 19px "Courier Prime", monospace';
+  ctx.fillText('🎙️ Secret Voice Note: "Kitni bhi ladai kar lo, haq toh hamesha mera hi rahega..."', 600, 1980);
+
+  ctx.fillStyle = '#fce7f3';
+  ctx.font = 'bold 20px "Courier Prime", monospace';
+  ctx.fillText('"Distance means nothing when someone means everything." 🥂💌', 600, 2030);
+
+  ctx.fillStyle = '#d8b4fe';
+  ctx.font = '16px "Courier Prime", monospace';
+  ctx.fillText('Forever & Always • Dedicated to Sonam (urf Sona, urf Vaishu) by Yuvraj • 2026', 600, 2080);
+
+  // Trigger Instant PNG Download
+  try {
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = 'Sona-Birthday-Journey-Collage-2026.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    if (btn) btn.innerHTML = '✅ Collage Saved! 🎞️💜';
+    if (toast) {
+      toast.textContent = 'Full Journey Collage saved to gallery! 🎞️💜';
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 4500);
+    }
+    launchConfetti();
+  } catch (err) {
+    console.warn('Journey collage download error:', err);
+    if (btn) btn.innerHTML = '🎞️ Full Journey Collage (Dark Romance) 💜✨';
   }
 }
 
