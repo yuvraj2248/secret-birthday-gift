@@ -1,0 +1,4 @@
+# Autonomous Engineering Rules
+
+CRITICAL WORKFLOW RULE:
+After completing ANY code change, feature addition, or bug fix requested by the user in any future prompt, you MUST automatically run git add -A, commit with a clear conventional commit message (git commit -m "..."), and push the changes to GitHub (git push) before finishing your response—without waiting for the user to ask.
