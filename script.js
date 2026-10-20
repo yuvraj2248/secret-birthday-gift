@@ -2413,7 +2413,7 @@ function renderJourneyCollage(ctx, canvas, imgs, btn, toast) {
   ctx.shadowColor = 'transparent';
 
   ctx.fillStyle = '#e9d5ff';
-  ctx.font = 'italic 22px "Courier Prime", monospace';
+  ctx.font = 'italic 19px "Courier Prime", monospace';
   ctx.fillText('Every memory, every chapter, crafted with love for Sona by Yuvraj 🌙💜', 600, 188);
 
   // Header Divider
@@ -2581,29 +2581,32 @@ function renderJourneyCollage(ctx, canvas, imgs, btn, toast) {
   ctx.stroke();
   ctx.restore();
 
+  // Draw Polaroid of Anya on Top Right of letter box (No text collision!)
   if (anyaImg) {
     ctx.save();
-    ctx.translate(195, 1260);
-    ctx.rotate(-0.03);
+    ctx.translate(970, 1240);
+    ctx.rotate(0.04);
     ctx.fillStyle = '#ffffff';
-    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowColor = 'rgba(0,0,0,0.55)';
     ctx.shadowBlur = 18;
     ctx.shadowOffsetY = 8;
-    ctx.fillRect(-95, -90, 190, 200);
-    ctx.drawImage(anyaImg, -80, -75, 160, 135);
-    ctx.font = '28px sans-serif';
+    ctx.fillRect(-85, -80, 170, 180);
+    ctx.drawImage(anyaImg, -72, -68, 144, 122);
+    ctx.font = '24px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('🎀', 0, 90);
+    ctx.fillText('🎀', 0, 78);
     ctx.restore();
   }
 
+  // Letter Headline
   ctx.textAlign = 'left';
   ctx.fillStyle = '#ffe4e6';
-  ctx.font = 'bold 26px "Playfair Display", serif';
-  ctx.fillText('Happy Birthday to the girl who owns my favourite smiles, Vaishu! ✨💖', 320, 1205);
+  ctx.font = 'bold 24px "Playfair Display", serif';
+  ctx.fillText('Happy Birthday to the girl who owns my favourite smiles, Vaishu! ✨💖', 115, 1175);
 
+  // Letter Body Lines (Clean left padding, no overlap with top-right polaroid)
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 19.5px "Courier Prime", monospace';
+  ctx.font = 'bold 18.5px "Courier Prime", monospace';
   ctx.shadowColor = 'rgba(0,0,0,0.7)';
   ctx.shadowBlur = 6;
   ctx.shadowOffsetY = 2;
@@ -2613,32 +2616,32 @@ function renderJourneyCollage(ctx, canvas, imgs, btn, toast) {
     'bhi sirf tumhari ek hasi ya ek aawaz pal bhar me theek kar deti hai.',
     'You make ordinary moments feel a little magical just by being in them.',
     '',
-    'Log kehte hain hum besties hain, par sach toh yeh hai ki tum mere liye usse',
-    'kahin zyada khaas ho. Tumhare saare nakhre, tumhari har choti-badi khushi,',
-    'aur tumhari har pagalpan wali baat meri favourite hai.',
+    'Log kehte hain hum besties hain, par sach toh yeh hai ki tum mere liye',
+    'usse kahin zyada khaas ho. Tumhare saare nakhre, tumhari har choti-badi',
+    'khushi, aur tumhari har pagalpan wali baat meri favourite hai.',
     '',
     'Happy Birthday once again, meri Sona! Aaj bhi, kal bhi, aur hamesha—',
     'main sirf tumhari side hu. 🌙❤️'
   ];
 
-  let lTextY = 1270;
+  let lTextY = 1230;
   letterLines.forEach((line) => {
     if (line.includes('Happy Birthday once again')) {
       ctx.fillStyle = '#ffd1dc';
-      ctx.font = 'bold 22px "Courier Prime", monospace';
+      ctx.font = 'bold 20.5px "Courier Prime", monospace';
     } else {
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 19.5px "Courier Prime", monospace';
+      ctx.font = 'bold 18.5px "Courier Prime", monospace';
     }
     ctx.fillText(line, 115, lTextY);
-    lTextY += 38;
+    lTextY += 36;
   });
 
   ctx.shadowColor = 'transparent';
   ctx.textAlign = 'right';
   ctx.fillStyle = '#fbcfe8';
-  ctx.font = 'italic bold 24px "Courier Prime", monospace';
-  ctx.fillText('— With all my heart, Yuvraj 💖', 1080, 1795);
+  ctx.font = 'italic bold 23px "Courier Prime", monospace';
+  ctx.fillText('— With all my heart, Yuvraj 💖', 1060, 1800);
 
   // ── BOTTOM DEDICATION & SOUNDTRACK BAR (Y: 1890 to 2140) ──
   ctx.strokeStyle = 'rgba(251, 191, 36, 0.4)';
@@ -2650,20 +2653,20 @@ function renderJourneyCollage(ctx, canvas, imgs, btn, toast) {
 
   ctx.textAlign = 'center';
   ctx.fillStyle = '#fbbf24';
-  ctx.font = 'bold 22px "Courier Prime", monospace';
+  ctx.font = 'bold 20px "Courier Prime", monospace';
   ctx.fillText('🎵 OFFICIAL SOUNDTRACK: "VAAROON FOREVER" — ANAND BHASKAR', 600, 1940);
 
   ctx.fillStyle = '#e9d5ff';
-  ctx.font = 'italic 19px "Courier Prime", monospace';
-  ctx.fillText('🎙️ Secret Voice Note: "Kitni bhi ladai kar lo, haq toh hamesha mera hi rahega..."', 600, 1980);
+  ctx.font = 'italic 18px "Courier Prime", monospace';
+  ctx.fillText('🎙️ Secret Voice Note: "Kitni bhi ladai kar lo, haq toh hamesha mera hi rahega..."', 600, 1985);
 
   ctx.fillStyle = '#fce7f3';
-  ctx.font = 'bold 20px "Courier Prime", monospace';
+  ctx.font = 'bold 19px "Courier Prime", monospace';
   ctx.fillText('"Distance means nothing when someone means everything." 🥂💌', 600, 2030);
 
   ctx.fillStyle = '#d8b4fe';
-  ctx.font = '16px "Courier Prime", monospace';
-  ctx.fillText('Forever & Always • Dedicated to Sonam (urf Sona, urf Vaishu) by Yuvraj • 2026', 600, 2080);
+  ctx.font = '15px "Courier Prime", monospace';
+  ctx.fillText('Forever & Always • Dedicated to Sonam (urf Sona, urf Vaishu) by Yuvraj • 2026', 600, 2075);
 
   // Trigger Instant PNG Download
   try {
