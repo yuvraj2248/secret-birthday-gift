@@ -2254,9 +2254,9 @@ html, body {
 }
 
 .keepsake-btn-journey {
-  background: linear-gradient(135deg, #4a044e 0%, #701a75 35%, #831843 70%, #9d174d 100%) !important;
-  border: 2px solid rgba(251, 191, 36, 0.85) !important;
-  box-shadow: 0 8px 24px rgba(112, 26, 117, 0.55), 0 0 20px rgba(251, 191, 36, 0.35) !important;
+  background: linear-gradient(135deg, #f43f5e 0%, #ec4899 45%, #d946ef 80%, #8b5cf6 100%) !important;
+  border: 2px solid rgba(255, 240, 245, 0.95) !important;
+  box-shadow: 0 8px 24px rgba(236, 72, 153, 0.45), 0 0 20px rgba(251, 207, 232, 0.35) !important;
   position: relative;
   overflow: hidden;
 }

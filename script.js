@@ -2362,7 +2362,10 @@ function downloadJourneyCollage(event) {
     } catch(e) { return null; }
   };
 
-  const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  const fontsTimeout = new Promise(resolve => setTimeout(resolve, 1500));
+  const fontsReady = (document.fonts && document.fonts.ready)
+    ? Promise.race([document.fonts.ready, fontsTimeout])
+    : Promise.resolve();
 
   Promise.all([
     fontsReady,
