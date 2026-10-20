@@ -1230,6 +1230,175 @@ html, body {
   pointer-events: none;
 }
 
+/* ─── BTS PHOTOCARD 3D FLIP & SECRET VOICE NOTE ─── */
+.bts-photocard-item {
+  perspective: 1200px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.bts-card-flip-wrap {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.85s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bts-card-flip-wrap.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.bts-card-front,
+.bts-card-back {
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.bts-card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #240a34 !important;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(192, 132, 252, 0.35) 0%, transparent 60%),
+    linear-gradient(90deg, rgba(168, 85, 247, 0.25) 50%, transparent 50%),
+    linear-gradient(rgba(147, 51, 234, 0.25) 50%, transparent 50%) !important;
+  background-size: 100% 100%, 14px 14px, 14px 14px !important;
+  border: 2px solid rgba(216, 180, 254, 0.85) !important;
+  box-shadow: 0 14px 34px rgba(147, 51, 234, 0.45), 0 0 20px rgba(192, 132, 252, 0.5) !important;
+}
+
+.bts-flip-hint {
+  font-size: 0.65rem;
+  color: #7e22ce;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 4px;
+  opacity: 0.85;
+  animation: pulseHint 2s infinite ease-in-out;
+}
+
+.bts-flip-back-tag {
+  cursor: pointer;
+  background: linear-gradient(135deg, #f5f3ff, #ede9fe) !important;
+}
+
+.bts-back-badge {
+  background: linear-gradient(135deg, #a855f7, #6b21a8) !important;
+}
+
+.bts-voice-hologram {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.bts-cassette-heart {
+  font-size: 2.2rem;
+  filter: drop-shadow(0 0 12px rgba(192, 132, 252, 0.9));
+  animation: heartPulse 1.8s infinite ease-in-out;
+}
+
+.bts-voice-sender {
+  color: #f3e8ff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-top: 4px;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+
+.bts-voice-tagline {
+  color: #d8b4fe;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.65rem;
+  font-style: italic;
+  margin: 3px 0 10px;
+  line-height: 1.25;
+}
+
+.bts-voice-play-btn {
+  background: linear-gradient(135deg, #c084fc, #9333ea);
+  border: 1.5px solid #ffffff;
+  color: #ffffff;
+  font-family: 'Fredoka', 'Poppins', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 7px 15px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(147, 51, 234, 0.5), 0 0 10px rgba(192, 132, 252, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bts-voice-play-btn:hover,
+.bts-voice-play-btn:active {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(147, 51, 234, 0.7), 0 0 16px rgba(216, 180, 254, 0.7);
+}
+
+.bts-play-icon {
+  font-size: 0.85rem;
+}
+
+.bts-sound-waveform {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3.5px;
+  margin-top: 10px;
+  height: 18px;
+}
+
+.bts-sound-waveform .wave-bar {
+  display: inline-block;
+  width: 3.5px;
+  height: 5px;
+  background: #c084fc;
+  border-radius: 4px;
+  transition: height 0.2s ease;
+}
+
+.bts-sound-waveform.is-playing .wave-bar {
+  animation: waveDance 1.2s infinite ease-in-out alternate;
+}
+
+.bts-sound-waveform.is-playing .wave-bar:nth-child(1) { animation-delay: 0.0s; height: 16px; }
+.bts-sound-waveform.is-playing .wave-bar:nth-child(2) { animation-delay: 0.2s; height: 10px; }
+.bts-sound-waveform.is-playing .wave-bar:nth-child(3) { animation-delay: 0.4s; height: 18px; }
+.bts-sound-waveform.is-playing .wave-bar:nth-child(4) { animation-delay: 0.1s; height: 14px; }
+.bts-sound-waveform.is-playing .wave-bar:nth-child(5) { animation-delay: 0.3s; height: 17px; }
+.bts-sound-waveform.is-playing .wave-bar:nth-child(6) { animation-delay: 0.5s; height: 9px; }
+
+@keyframes waveDance {
+  0% { transform: scaleY(0.3); background: #c084fc; }
+  100% { transform: scaleY(1.4); background: #f472b6; }
+}
+
+@keyframes pulseHint {
+  0%, 100% { opacity: 0.7; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-1.5px); }
+}
+
+@keyframes heartPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(192, 132, 252, 0.7)); }
+  50% { transform: scale(1.12); filter: drop-shadow(0 0 18px rgba(244, 114, 182, 0.95)); }
+}
+
 .bts-purple-bow-deco {
   font-size: clamp(2rem, 3.2vw, 2.6rem);
   filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.7));
@@ -2056,6 +2225,64 @@ html, body {
 }
 .letter-closing {
   margin-bottom: 0;
+}
+
+/* ─── KEEPSAKE DOWNLOAD PILL BUTTON (BOX 3) ─── */
+.keepsake-action-wrap {
+  margin-top: clamp(16px, 2.5vh, 26px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeInKeepsake 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+}
+
+@keyframes fadeInKeepsake {
+  0% { opacity: 0; transform: translateY(14px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.keepsake-btn {
+  background: linear-gradient(135deg, #f43f5e 0%, #a855f7 50%, #ec4899 100%);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  color: #ffffff;
+  font-family: 'Fredoka', 'Poppins', sans-serif;
+  font-size: clamp(0.92rem, 1.25vw, 1.12rem);
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 12px 28px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(244, 63, 94, 0.45), 0 0 18px rgba(236, 72, 153, 0.4);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.keepsake-btn:hover,
+.keepsake-btn:active {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 12px 30px rgba(244, 63, 94, 0.6), 0 0 24px rgba(216, 180, 254, 0.6);
+}
+
+.keepsake-camera-icon {
+  font-size: 1.25rem;
+}
+
+.keepsake-toast {
+  color: #ffe4e6;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-top: 8px;
+  padding: 5px 14px;
+  background: rgba(36, 10, 52, 0.85);
+  border: 1px solid rgba(244, 114, 182, 0.5);
+  border-radius: 999px;
+  animation: fadeInKeepsake 0.4s ease forwards;
 }
 
 /* Glowing Neon Typewriter Cursor */

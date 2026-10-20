@@ -428,19 +428,46 @@
             <!-- BTS Purple Borahae Bow Deco -->
             <div class="line-deco-element bow-deco bts-purple-bow-deco">💜</div>
 
-            <!-- Special BTS Photocard: Borahae Sona -->
-            <div class="hanging-polaroid-item bts-photocard-item tilt-straight" onclick="focusHangingPhoto(this)" title="Special BTS Army Photocard: Borahae Sona! 💜">
+            <!-- Special BTS Photocard: Borahae Sona with 3D Flip & Secret Voice Note -->
+            <div class="hanging-polaroid-item bts-photocard-item tilt-straight" id="bts-photocard-container" onclick="handleBTSCardClick(event, this)" title="Tap to flip & hear Secret Voice Note! 💜">
               <div class="wooden-clothespin bts-clothespin">
                 <span class="peg-slit"></span>
                 <span class="peg-spring bts-spring"></span>
               </div>
-              <div class="gingham-frame bts-photocard-frame">
-                <div class="bts-card-badge">✨ BTS ARMY SPECIAL ✨</div>
-                <div class="photo-inner-box bts-photo-inner">
-                  <img src="assets/bts-photocard.jpg" alt="BTS Special Photocard - Borahae Sona" />
+              <div class="bts-card-flip-wrap" id="bts-card-flip-wrap">
+                <!-- Front Side: Borahae BTS Photocard -->
+                <div class="gingham-frame bts-photocard-frame bts-card-front">
+                  <div class="bts-card-badge">✨ BTS ARMY SPECIAL ✨</div>
+                  <div class="photo-inner-box bts-photo-inner">
+                    <img src="assets/bts-photocard.jpg" alt="BTS Special Photocard - Borahae Sona" />
+                  </div>
+                  <div class="photo-caption-tag bts-caption-tag">Borahae Sona! 💜✨</div>
+                  <div class="bts-corner-bow">🎀</div>
+                  <div class="bts-flip-hint">↻ Tap card to flip & listen</div>
                 </div>
-                <div class="photo-caption-tag bts-caption-tag">Borahae Sona! 💜✨</div>
-                <div class="bts-corner-bow">🎀</div>
+
+                <!-- Back Side: Secret Voice Note Player -->
+                <div class="gingham-frame bts-photocard-frame bts-card-back">
+                  <div class="bts-card-badge bts-back-badge">🎙️ SECRET VOICE NOTE 💜</div>
+                  <div class="bts-voice-hologram">
+                    <div class="bts-cassette-heart">💜</div>
+                    <div class="bts-voice-sender">From Yuvraj to Sona</div>
+                    <p class="bts-voice-tagline">"Some words are meant to be heard..."</p>
+                    <button type="button" class="bts-voice-play-btn" id="bts-voice-btn" onclick="toggleSecretVoiceNote(event)" title="Listen to secret voice note">
+                      <span class="bts-play-icon" id="bts-play-icon">▶️</span>
+                      <span id="bts-voice-label">Play Voice Note</span>
+                    </button>
+                    <div class="bts-sound-waveform" id="bts-sound-waveform">
+                      <span class="wave-bar"></span>
+                      <span class="wave-bar"></span>
+                      <span class="wave-bar"></span>
+                      <span class="wave-bar"></span>
+                      <span class="wave-bar"></span>
+                      <span class="wave-bar"></span>
+                    </div>
+                  </div>
+                  <div class="photo-caption-tag bts-caption-tag bts-flip-back-tag">↻ Tap to flip back 🌸</div>
+                </div>
               </div>
             </div>
 
@@ -1045,6 +1072,15 @@
             <p class="letter-para letter-closing" id="letter-closing-el">
               Happy Birthday once again, meri Sona! Aaj bhi, kal bhi, aur hamesha—main sirf tumhari side hu. 🌙❤️
             </p>
+
+            <!-- Keepsake Download Pill Button -->
+            <div id="keepsake-action-wrap" class="keepsake-action-wrap hidden">
+              <button id="download-keepsake-btn" class="keepsake-btn" onclick="downloadLetterKeepsake(event)" title="Save high-res keepsake picture to gallery">
+                <span class="keepsake-camera-icon">📸</span>
+                <span class="keepsake-btn-text">Save Keepsake to Gallery ✨</span>
+              </button>
+              <div id="keepsake-toast" class="keepsake-toast hidden">Card saved to your downloads! 💌✨</div>
+            </div>
           </div>
         </div>
       </div>

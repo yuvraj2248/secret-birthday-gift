@@ -1445,6 +1445,14 @@ const LETTER_SECTIONS = [
 let letterTypewriterTimer = null;
 let isLetterTyping = false;
 
+function revealKeepsakeButton() {
+  const wrap = document.getElementById('keepsake-action-wrap');
+  if (wrap) {
+    wrap.classList.remove('hidden');
+    wrap.style.display = 'flex';
+  }
+}
+
 function renderLetterInstant() {
   if (letterTypewriterTimer) {
     clearTimeout(letterTypewriterTimer);
@@ -1458,6 +1466,8 @@ function renderLetterInstant() {
   });
   const existingCursor = document.getElementById('letter-typing-cursor');
   if (existingCursor) existingCursor.remove();
+  revealKeepsakeButton();
+  restoreMusicVolume(0.75, 800);
 }
 
 function skipLetterTypewriter() {
@@ -1472,6 +1482,13 @@ function startLetterTypewriter() {
     letterTypewriterTimer = null;
   }
   isLetterTyping = true;
+
+  // Hide keepsake button at start of typing
+  const wrap = document.getElementById('keepsake-action-wrap');
+  if (wrap) {
+    wrap.classList.add('hidden');
+    wrap.style.display = 'none';
+  }
 
   // Clear target containers
   LETTER_SECTIONS.forEach(sec => {
@@ -1495,6 +1512,7 @@ function startLetterTypewriter() {
 
     if (secIndex >= LETTER_SECTIONS.length) {
       isLetterTyping = false;
+      revealKeepsakeButton();
       setTimeout(() => {
         if (cursorEl && cursorEl.parentNode) {
           cursorEl.style.transition = 'opacity 0.6s ease';
@@ -1508,6 +1526,16 @@ function startLetterTypewriter() {
     const currentSection = LETTER_SECTIONS[secIndex];
     const el = document.getElementById(currentSection.id);
     const chars = Array.from(currentSection.text);
+
+    // Subtle tactile haptic pulse at start of each paragraph on mobile
+    if (charIndex === 0 && 'vibrate' in navigator) {
+      try { navigator.vibrate([15, 60, 15]); } catch (e) {}
+    }
+
+    // Audio swell on final emotional closing line
+    if (secIndex === LETTER_SECTIONS.length - 1 && charIndex === 0) {
+      restoreMusicVolume(0.78, 1800);
+    }
 
     if (charIndex < chars.length) {
       const ch = chars[charIndex];
@@ -1539,6 +1567,9 @@ function startLetterTypewriter() {
 function openLetterModal() {
   pauseSakura();
   launchConfetti();
+  // Audio ducking for intimate reading experience
+  duckMusicVolume(0.26, 1200);
+
   const modal = document.getElementById('letter-modal');
   if (modal) {
     modal.classList.remove('hidden');
@@ -1559,6 +1590,9 @@ function closeLetterModal() {
     letterTypewriterTimer = null;
   }
   isLetterTyping = false;
+  // Restore background music volume
+  restoreMusicVolume(0.75, 400);
+
   const modal = document.getElementById('letter-modal');
   if (modal) modal.classList.add('hidden');
   syncSakuraState();
@@ -2011,6 +2045,278 @@ function updateMusicButtonState(isPlaying) {
     setupBtn();
   }
 })();
+
+/* ─── AUDIO DUCKING & SWELL CONTROLLER ─── */
+let audioDuckInterval = null;
+
+function duckMusicVolume(targetVol = 0.28, duration = 1000) {
+  if (!bgAudio) return;
+  if (audioDuckInterval) clearInterval(audioDuckInterval);
+  const startVol = bgAudio.volume;
+  const steps = 20;
+  const stepTime = duration / steps;
+  let currentStep = 0;
+  audioDuckInterval = setInterval(() => {
+    currentStep++;
+    const progress = currentStep / steps;
+    bgAudio.volume = Math.max(0.04, startVol + (targetVol - startVol) * progress);
+    if (currentStep >= steps) {
+      clearInterval(audioDuckInterval);
+      audioDuckInterval = null;
+    }
+  }, stepTime);
+}
+
+function restoreMusicVolume(targetVol = 0.75, duration = 1200) {
+  if (!bgAudio) return;
+  if (audioDuckInterval) clearInterval(audioDuckInterval);
+  const startVol = bgAudio.volume;
+  const steps = 24;
+  const stepTime = duration / steps;
+  let currentStep = 0;
+  audioDuckInterval = setInterval(() => {
+    currentStep++;
+    const progress = currentStep / steps;
+    bgAudio.volume = Math.min(1.0, startVol + (targetVol - startVol) * progress);
+    if (currentStep >= steps) {
+      clearInterval(audioDuckInterval);
+      audioDuckInterval = null;
+    }
+  }, stepTime);
+}
+
+/* ─── BTS 3D FLIP CARD & SECRET VOICE NOTE ─── */
+let isBTSFlipped = false;
+let voiceAudio = null;
+let isVoicePlaying = false;
+
+function handleBTSCardClick(event, container) {
+  if (event.target.closest('#bts-voice-btn')) return;
+  toggleBTSCardFlip();
+}
+
+function toggleBTSCardFlip() {
+  const flipWrap = document.getElementById('bts-card-flip-wrap');
+  if (!flipWrap) return;
+  isBTSFlipped = !isBTSFlipped;
+  if (isBTSFlipped) {
+    flipWrap.classList.add('is-flipped');
+    if ('vibrate' in navigator) { try { navigator.vibrate(25); } catch(e){} }
+  } else {
+    flipWrap.classList.remove('is-flipped');
+    if (isVoicePlaying && voiceAudio) {
+      voiceAudio.pause();
+      isVoicePlaying = false;
+      updateVoiceNoteUI(false);
+      restoreMusicVolume(0.75, 400);
+    }
+  }
+}
+
+function toggleSecretVoiceNote(event) {
+  if (event) event.stopPropagation();
+  if (!voiceAudio) {
+    voiceAudio = new Audio('assets/voice-note.mp3');
+    voiceAudio.addEventListener('ended', () => {
+      isVoicePlaying = false;
+      updateVoiceNoteUI(false);
+      restoreMusicVolume(0.75, 600);
+      launchConfetti();
+    });
+    voiceAudio.addEventListener('error', (e) => {
+      console.warn('Voice note audio notice:', e);
+      isVoicePlaying = false;
+      updateVoiceNoteUI(false);
+      restoreMusicVolume(0.75, 200);
+    });
+  }
+
+  if (isVoicePlaying) {
+    voiceAudio.pause();
+    isVoicePlaying = false;
+    updateVoiceNoteUI(false);
+    restoreMusicVolume(0.75, 400);
+  } else {
+    duckMusicVolume(0.08, 400);
+    voiceAudio.currentTime = 0;
+    voiceAudio.play().then(() => {
+      isVoicePlaying = true;
+      updateVoiceNoteUI(true);
+      if ('vibrate' in navigator) { try { navigator.vibrate([20, 60, 20]); } catch(e){} }
+    }).catch(err => {
+      console.warn('Voice play policy block:', err);
+      restoreMusicVolume(0.75, 200);
+    });
+  }
+}
+
+function updateVoiceNoteUI(playing) {
+  const icon = document.getElementById('bts-play-icon');
+  const label = document.getElementById('bts-voice-label');
+  const waveform = document.getElementById('bts-sound-waveform');
+  if (icon) icon.textContent = playing ? '⏸️' : '▶️';
+  if (label) label.textContent = playing ? 'Pause Voice Note' : 'Play Voice Note';
+  if (waveform) {
+    if (playing) waveform.classList.add('is-playing');
+    else waveform.classList.remove('is-playing');
+  }
+}
+
+/* ─── KEEPSAKE CANVAS GENERATOR & INSTANT DOWNLOAD (BOX 3) ─── */
+function downloadLetterKeepsake(event) {
+  if (event) event.stopPropagation();
+  const btn = document.getElementById('download-keepsake-btn');
+  const toast = document.getElementById('keepsake-toast');
+  if (btn) btn.innerHTML = '⏳ Generating Keepsake...';
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = 1350;
+  const ctx = canvas.getContext('2d');
+
+  // Background deep royal purple gradient
+  const bgGrad = ctx.createLinearGradient(0, 0, 1080, 1350);
+  bgGrad.addColorStop(0, '#1c082b');
+  bgGrad.addColorStop(0.5, '#2f1347');
+  bgGrad.addColorStop(1, '#180724');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, 1080, 1350);
+
+  // Outer decorative border
+  ctx.strokeStyle = 'rgba(255, 192, 218, 0.65)';
+  ctx.lineWidth = 14;
+  ctx.strokeRect(36, 36, 1080 - 72, 1350 - 72);
+
+  ctx.strokeStyle = 'rgba(216, 180, 254, 0.4)';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(48, 48, 1080 - 96, 1350 - 96);
+
+  // Decorative stars & sparkles
+  ctx.fillStyle = 'rgba(255, 230, 150, 0.85)';
+  ctx.font = '28px sans-serif';
+  ctx.fillText('✨', 80, 110);
+  ctx.fillText('⭐', 970, 110);
+  ctx.fillText('🌸', 80, 1280);
+  ctx.fillText('💜', 970, 1280);
+
+  // Header Title
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#fce7f3';
+  ctx.font = 'bold 36px "Courier Prime", monospace';
+  ctx.fillText('TO: SONA (VAISHU) 🌸✨', 540, 120);
+
+  ctx.fillStyle = '#d8b4fe';
+  ctx.font = 'italic 22px "Courier Prime", monospace';
+  ctx.fillText('A Forever Keepsake • Birthday 2026', 540, 160);
+
+  // Divider Line
+  ctx.strokeStyle = 'rgba(244, 114, 182, 0.4)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(200, 190);
+  ctx.lineTo(880, 190);
+  ctx.stroke();
+
+  // Load and draw polaroid photo
+  const photoImg = new Image();
+  photoImg.crossOrigin = 'anonymous';
+  photoImg.onload = () => {
+    drawKeepsakeContent(ctx, canvas, photoImg, btn, toast);
+  };
+  photoImg.onerror = () => {
+    drawKeepsakeContent(ctx, canvas, null, btn, toast);
+  };
+  photoImg.src = 'assets/birthday-anime-character.jpg';
+}
+
+function drawKeepsakeContent(ctx, canvas, photoImg, btn, toast) {
+  if (photoImg) {
+    ctx.save();
+    ctx.translate(540, 360);
+    ctx.rotate(-0.02);
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(0,0,0,0.45)';
+    ctx.shadowBlur = 25;
+    ctx.shadowOffsetY = 12;
+    ctx.fillRect(-140, -130, 280, 290);
+    ctx.shadowColor = 'transparent';
+
+    ctx.drawImage(photoImg, -120, -110, 240, 200);
+
+    ctx.font = '36px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🎀', 0, 135);
+    ctx.restore();
+  }
+
+  // Draw Letter Paragraphs
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 22px "Courier Prime", monospace';
+  ctx.shadowColor = 'rgba(0,0,0,0.6)';
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetY = 2;
+
+  const letterLines = [
+    'Happy Birthday to the girl who owns my favourite smiles, Vaishu! ✨💖',
+    '',
+    'Sach kahu Sona, tumhari aadat si ho gayi hai. Mere sabse kharab din',
+    'ko bhi sirf tumhari ek hasi ya ek aawaz pal bhar me theek kar deti hai.',
+    'You make ordinary moments feel a little magical just by being in them.',
+    '',
+    'Log kehte hain hum besties hain, par sach toh yeh hai ki tum mere',
+    'liye usse kahin zyada khaas ho. Tumhare saare nakhre, tumhari har',
+    'choti-badi khushi, aur tumhari har pagalpan wali baat meri favourite hai.',
+    '',
+    'Happy Birthday once again, meri Sona! Aaj bhi, kal bhi, aur hamesha—',
+    'main sirf tumhari side hu. 🌙❤️'
+  ];
+
+  let textY = 560;
+  const lineHeight = 38;
+  letterLines.forEach((line) => {
+    if (line.includes('Happy Birthday to the girl')) {
+      ctx.fillStyle = '#ffe4e6';
+      ctx.font = 'bold 26px "Courier Prime", monospace';
+    } else if (line.includes('Happy Birthday once again')) {
+      ctx.fillStyle = '#ffd1dc';
+      ctx.font = 'bold 25px "Courier Prime", monospace';
+    } else {
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 22px "Courier Prime", monospace';
+    }
+    ctx.fillText(line, 110, textY);
+    textY += lineHeight;
+  });
+
+  // Footer signature
+  ctx.shadowColor = 'transparent';
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#fbcfe8';
+  ctx.font = 'italic bold 26px "Courier Prime", monospace';
+  ctx.fillText('— With all my heart, Yuvraj 💖', 960, 1220);
+
+  // Trigger download
+  try {
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = 'Sona-Birthday-Keepsake.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    if (btn) btn.innerHTML = '✅ Saved! 📸';
+    if (toast) {
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 4000);
+    }
+    launchConfetti();
+  } catch (err) {
+    console.warn('Keepsake download notice:', err);
+    if (btn) btn.innerHTML = '📸 Save Keepsake to Gallery ✨';
+  }
+}
 
 /* ─── START ON LOAD ─── */
 startCountdown();
